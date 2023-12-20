@@ -6,10 +6,12 @@ import { Comment } from "./Comment";
 import { format, formatDistanceToNow } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 
+import { HandsClapping, ThumbsUp } from "phosphor-react";
+
 import styles from "./Post.module.scss";
 
 export function Post({ author, publishedAt, content }) {
-  const [comments, setComment] = useState(["post maneiro!"]);
+  const [comments, setComments] = useState(["post maneiro!"]);
 
   const [newCommentText, setNewCommentText] = useState("");
 
@@ -29,13 +31,36 @@ export function Post({ author, publishedAt, content }) {
   function handleCreateNewComment() {
     event.preventDefault();
 
-    setComment([...comments, newCommentText]);
+    setComments([...comments, newCommentText]);
     setNewCommentText("");
   }
 
   function handleNewCommentChange() {
+    event.target.setCustomValidity("");
     setNewCommentText(event.target.value);
   }
+
+  function deleteComment(commentToDelete) {
+    const commentsWithoutDeletedOne = comments.filter((comment) => {
+      return comment != commentToDelete;
+    });
+
+    setComments(commentsWithoutDeletedOne);
+  }
+
+  function handleCheckComment() {
+    event.target.setCustomValidity("Este campo é obrigatório");
+  }
+
+  const [likeCount, setLikeCount] = useState(0);
+
+  function handleLikeComment() {
+    setLikeCount((state) => {
+      return state + 1;
+    });
+  }
+
+  const isNewCommentEmpty = newCommentText.length === 0;
 
   return (
     <article className={styles.post}>
@@ -64,6 +89,13 @@ export function Post({ author, publishedAt, content }) {
             );
           }
         })}
+        <footer>
+          <button onClick={handleLikeComment}>
+            <HandsClapping size={20} />
+            Aplaudir
+            <span>{likeCount}</span>
+          </button>
+        </footer>
       </div>
 
       <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
@@ -73,15 +105,24 @@ export function Post({ author, publishedAt, content }) {
           onChange={handleNewCommentChange}
           value={newCommentText}
           placeholder="Deixe um comentário"
+          onInvalid={handleCheckComment}
         />
         <footer>
-          <button type="submit">Publicar</button>
+          <button type="submit" disabled={isNewCommentEmpty}>
+            Publicar
+          </button>
         </footer>
       </form>
 
       <div className={styles.commentList}>
         {comments.map((eachComment) => {
-          return <Comment key={eachComment} content={eachComment} />;
+          return (
+            <Comment
+              key={eachComment}
+              content={eachComment}
+              onDeleteComment={deleteComment}
+            />
+          );
         })}
       </div>
     </article>
