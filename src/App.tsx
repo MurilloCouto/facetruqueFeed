@@ -6,7 +6,29 @@ import styles from "./App.module.scss";
 
 import "./global.scss";
 
-export function App({ data }) {
+interface Author {
+  name: string;
+  avatarUrl: string;
+  role: string;
+}
+
+interface Content {
+  type: string;
+  content: string;
+}
+
+interface PostProps {
+    id: number;
+    author: Author;
+    content: Content[];
+    publishedAt: Date;
+}
+
+interface PostList {
+  data: PostProps[];
+}
+
+export function App({ data }:PostList) {
   return (
     <div>
       <Header />
@@ -14,10 +36,10 @@ export function App({ data }) {
       <div className={styles.wrapper}>
         <Sidebar />
         <main>
-          {data.map((post) => {
+          {data.map((post: PostProps) => {
             return (
               <Post
-                key={data.id}
+                id={post.id}
                 author={post.author}
                 content={post.content}
                 publishedAt={post.publishedAt}

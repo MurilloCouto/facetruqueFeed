@@ -1,16 +1,34 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
 
 import { Avatar } from "./Avatar";
 import { Comment } from "./Comment";
 
-import { format, formatDistanceToNow } from "date-fns";
+import { Locale, format, formatDistanceToNow } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 
-import { HandsClapping, ThumbsUp } from "phosphor-react";
+import { HandsClapping } from "phosphor-react";
 
 import styles from "./Post.module.scss";
 
-export function Post({ author, publishedAt, content }) {
+interface Author {
+  name: string;
+  avatarUrl: string;
+  role: string;
+}
+
+interface Content {
+  type: string;
+  content: string;
+}
+
+interface PostProps {
+  id: number;
+  author: Author;
+  content: Content[];
+  publishedAt: Date;
+}
+
+export function Post({ author, publishedAt, content }:PostProps) {
   const [comments, setComments] = useState(["post maneiro!"]);
 
   const [newCommentText, setNewCommentText] = useState("");
@@ -19,36 +37,36 @@ export function Post({ author, publishedAt, content }) {
     publishedAt,
     "d 'de' LLLL 'às' HH:mm'h'",
     {
-      locale: ptBR,
+      locale: ptBR as unknown as Locale,
     }
   );
 
   const publishedAtRelative = formatDistanceToNow(publishedAt, {
-    locale: ptBR,
+    locale: ptBR as unknown as Locale,
     addSuffix: true,
   });
 
-  function handleCreateNewComment() {
+  function handleCreateNewComment(event: FormEvent) {
     event.preventDefault();
 
     setComments([...comments, newCommentText]);
     setNewCommentText("");
   }
 
-  function handleNewCommentChange() {
+  function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity("");
     setNewCommentText(event.target.value);
   }
 
-  function deleteComment(commentToDelete) {
+  function deleteComment(commentToDelete: string) {
     const commentsWithoutDeletedOne = comments.filter((comment) => {
-      return comment != commentToDelete;
+      return comment !== commentToDelete;
     });
 
     setComments(commentsWithoutDeletedOne);
   }
 
-  function handleCheckComment() {
+  function handleCheckComment(event: InvalidEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity("Este campo é obrigatório");
   }
 

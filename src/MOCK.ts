@@ -8,9 +8,9 @@ export const posts = [
       },
       content: [
           { type: 'paragraph', content: 'Salve rapeize ' },
-          { type: 'paragraph', content: 'Acabei de subir mais um projetinho que fiz no curso da Japa. O nome do projeto é NaiceToMiTwo 🚀'},  
+          { type: 'paragraph', content: 'Acabei de subir mais um projetinho que fiz no curso da Japa. O nome do projeto é NaiceToMiTwo 🚀' },  
        
-          {type: 'link', content: 'japa.design/naicetomitwo'}
+          { type: 'link', content: 'japa.design/naicetomitwo' }
       ], 
       publishedAt: new Date('2023-12-18 20:00:00')   
     },
