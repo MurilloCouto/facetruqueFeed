@@ -17,31 +17,36 @@ interface Author {
 }
 
 interface Content {
-  type: string;
+  type: 'paragraph' | 'link';
   content: string;
 }
 
-interface PostProps {
+export interface PostType {
   id: number;
   author: Author;
   content: Content[];
   publishedAt: Date;
 }
 
-export function Post({ author, publishedAt, content }:PostProps) {
+interface PostProps {
+  post: PostType;
+}
+
+
+export function Post({ post }: PostProps) {
   const [comments, setComments] = useState(["post maneiro!"]);
 
   const [newCommentText, setNewCommentText] = useState("");
 
   const publishedAtFormatted = format(
-    publishedAt,
+    post.publishedAt,
     "d 'de' LLLL 'às' HH:mm'h'",
     {
       locale: ptBR as unknown as Locale,
     }
   );
 
-  const publishedAtRelative = formatDistanceToNow(publishedAt, {
+  const publishedAtRelative = formatDistanceToNow(post.publishedAt, {
     locale: ptBR as unknown as Locale,
     addSuffix: true,
   });
@@ -84,19 +89,19 @@ export function Post({ author, publishedAt, content }:PostProps) {
     <article className={styles.post}>
       <header className={styles.header}>
         <div className={styles.author}>
-          <Avatar src={author.avatarUrl} />
+          <Avatar src={post.author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong className={styles.nome}>{author.name}</strong>
-            <span className={styles.prof}>{author.role}</span>
+            <strong className={styles.nome}>{post.author.name}</strong>
+            <span className={styles.prof}>{post.author.role}</span>
           </div>
         </div>
-        <time title={publishedAtFormatted} dateTime={publishedAt.toISOString()}>
+        <time title={publishedAtFormatted} dateTime={post.publishedAt.toISOString()}>
           {publishedAtRelative}
         </time>
       </header>
 
       <div className={styles.content}>
-        {content.map((line) => {
+        {post.content.map((line) => {
           if (line.type === "paragraph") {
             return <p key={line.content}>{line.content}</p>;
           } else {

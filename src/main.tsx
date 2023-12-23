@@ -1,8 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import { posts } from "./MOCK";
-
 import { App } from "./App";
 
 const rootElement = document.getElementById("root");
@@ -12,7 +10,7 @@ if (rootElement) {
 
   root.render(
     <React.StrictMode>
-      <App data={posts} />
+      <App />
     </React.StrictMode>
   );
 } else {
